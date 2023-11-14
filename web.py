@@ -23,14 +23,16 @@ def complete_todo():
     for i in st.session_state["completed_items"]:
         for idx, todo in enumerate(todos):
             if todo == i:
+                # if st.session_state[todo]
                 todos.pop(idx)
-                # completed.remove(i)
                 st.session_state["completed_items"].remove(todo)
                 # del st.session_state[todo]
     functions.update_todos(todos)
 
 
 def edit_todo(button_id):
+    if st.session_state[todos[button_id]]:
+        st.session_state[todos[button_id]] = False
     st.session_state["item_uncheck"] = True
     edit_idx = int(button_id)
     filler = todos[edit_idx]
