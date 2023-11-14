@@ -10,14 +10,16 @@ def add_todo():
         functions.update_todos(todos)
         st.session_state["new_todo"] = ""
 
+
 def complete_todo():
     for idx, todo in enumerate(todos):
-        for i in completed:
-            if idx == i:
+        for i in st.session_state["completed_items"]:
+            if todo == i:
                 todos.pop(idx)
-                completed.remove(i)
+                # completed.remove(i)
+                st.session_state["completed_items"].remove(todo)
                 # del st.session_state[todo]
-    functions.update_todos(todos)
+                functions.update_todos(todos)
 
 
 def edit_todo(button_id):
@@ -48,6 +50,9 @@ if "in_edit" not in st.session_state:
     st.session_state["in_edit"] = False
 if "item_uncheck" not in st.session_state:
     st.session_state["item_uncheck"] = True
+if "completed_items" not in st.session_state:
+    st.session_state["completed_items"] = []
+
 
 #webpage
 placeholder = st.empty()
@@ -69,12 +74,18 @@ for idx, todo in enumerate(todos):
         # button_id = "edit"+str(idx)
         edit_button = st.button("Edit", on_click=edit_todo, args=(idx,), key=idx)
     if checkbox:
-        completed.append(idx)
-    if st.session_state[todo]:
-        st.session_state["item_uncheck"] = False
+        if todo not in st.session_state["completed_items"]:
+            # completed.append(todos[idx])
+            st.session_state["completed_items"].append(todos[idx])
     else:
-        st.session_state["item_uncheck"] = True
-        # st.experimental_rerun()
+        if todo in st.session_state["completed_items"]:
+            # completed.remove(todos[idx])
+            st.session_state["completed_items"].remove(todos[idx])
+if len(st.session_state["completed_items"]) > 0:
+    st.session_state["item_uncheck"] = False
+else:
+    st.session_state["item_uncheck"] = True
+# st.experimental_rerun()
 
 #trigger events
 complete_button = st.button("Complete", on_click=complete_todo, disabled=st.session_state.get("item_uncheck"), key='complete')
@@ -89,4 +100,4 @@ if st.session_state["in_edit"]:
         confirm_button = st.button("Confirm", on_click=confirm_edit, key='confirm')
 
 # create_button = st.button("Create")
-# st.session_state
+st.session_state
