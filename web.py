@@ -34,6 +34,8 @@ def confirm_edit():
     functions.update_todos(todos)
     st.session_state["in_edit"] = False
 
+def cancel_edit():
+    st.session_state["in_edit"] = False
 
 todos = functions.get_todos()
 completed = []
@@ -70,8 +72,12 @@ complete_button = st.button("Complete", on_click=complete_todo, key='complete')
 if not st.session_state["in_edit"]:
     st.text_input(label="", placeholder="Enter a todo", on_change=add_todo, args=(), key='new_todo')
 if st.session_state["in_edit"]:
-    st.text_input(label="", placeholder="Enter a todo", on_change=confirm_edit, args=(), key='edit_todo')
-    confirm_button = st.button("Confirm", on_click=confirm_edit, key='confirm')
+    st.text_input(label="Editing todo", placeholder="Enter a todo", on_change=confirm_edit, args=(), key='edit_todo')
+    col1, col2 = st.columns([.15,1])
+    with col1:
+        cancel_button = st.button("Cancel", on_click=cancel_edit, key='cancel')
+    with col2:
+        confirm_button = st.button("Confirm", on_click=confirm_edit, key='confirm')
 
 # create_button = st.button("Create")
 # st.session_state
