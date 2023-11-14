@@ -31,6 +31,7 @@ def complete_todo():
 
 
 def edit_todo(button_id):
+    st.session_state["item_uncheck"] = True
     edit_idx = int(button_id)
     filler = todos[edit_idx]
     st.session_state["item_to_edit"] = edit_idx
@@ -44,6 +45,7 @@ def confirm_edit():
     todos[editing_idx] = st.session_state["edit_todo"] + '\n'
     functions.update_todos(todos)
     st.session_state["in_edit"] = False
+    st.session_state["item_uncheck"] = False
 
 
 def cancel_edit():
@@ -53,7 +55,7 @@ def cancel_edit():
 todos = functions.get_todos()
 notices = ["Please remember to check the completed todos promptly.",
           "Edit todo to keep your life on track.",
-          "Todo already."]
+          "Todo already exists."]
 
 if "item_to_edit" not in st.session_state:
     st.session_state["item_to_edit"] = 0
@@ -96,10 +98,10 @@ for idx, todo in enumerate(todos):
         if todo in st.session_state["completed_items"]:
             # completed.remove(todos[idx])
             st.session_state["completed_items"].remove(todos[idx])
-if len(st.session_state["completed_items"]) > 0:
-    st.session_state["item_uncheck"] = False
-else:
+if len(st.session_state["completed_items"]) < 1 or st.session_state["in_edit"]:
     st.session_state["item_uncheck"] = True
+else:
+    st.session_state["item_uncheck"] = False
 # st.experimental_rerun()
 
 #trigger events
