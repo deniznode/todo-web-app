@@ -71,7 +71,7 @@ if "duplicate_notice" not in st.session_state:
 #webpage
 placeholder = st.empty()
 st.title("My Todo App")
-st.subheader("Keep your life organized.")
+# st.subheader("Keep your life organized.")
 notice = st.write()
 if st.session_state["in_edit"]:
     notice = st.write(notices[1])
