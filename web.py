@@ -41,6 +41,8 @@ if "item_to_edit" not in st.session_state:
     st.session_state["item_to_edit"] = 0
 if "in_edit" not in st.session_state:
     st.session_state["in_edit"] = False
+if "item_uncheck" not in st.session_state:
+    st.session_state["item_uncheck"] = True
 
 #webpage
 placeholder = st.empty()
@@ -63,10 +65,14 @@ for idx, todo in enumerate(todos):
         edit_button = st.button("Edit", on_click=edit_todo, args=(idx,), key=idx)
     if checkbox:
         completed.append(idx)
+    if st.session_state[todo]:
+        st.session_state["item_uncheck"] = False
+    else:
+        st.session_state["item_uncheck"] = True
         # st.experimental_rerun()
 
 #trigger events
-complete_button = st.button("Complete", on_click=complete_todo, key='complete')
+complete_button = st.button("Complete", on_click=complete_todo, disabled=st.session_state.get("item_uncheck"), key='complete')
 if not st.session_state["in_edit"]:
     st.text_input(label="", placeholder="Enter a todo", on_change=add_todo, args=(), key='new_todo')
 if st.session_state["in_edit"]:
