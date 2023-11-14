@@ -8,6 +8,7 @@ def add_todo():
     if todo not in st.session_state:
         todos.append(todo)
         functions.update_todos(todos)
+        st.session_state["new_todo"] = ""
 
 def complete_todo():
     for idx, todo in enumerate(todos):
