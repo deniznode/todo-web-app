@@ -9,17 +9,25 @@ def add_todo():
         todos.append(todo)
         functions.update_todos(todos)
         st.session_state["new_todo"] = ""
+        if st.session_state["duplicate_notice"]:
+            st.session_state["duplicate_notice"] = False
+    else:
+        change_notice()
+
+
+def change_notice():
+    st.session_state["duplicate_notice"] = True
 
 
 def complete_todo():
-    for idx, todo in enumerate(todos):
-        for i in st.session_state["completed_items"]:
+    for i in st.session_state["completed_items"]:
+        for idx, todo in enumerate(todos):
             if todo == i:
                 todos.pop(idx)
                 # completed.remove(i)
                 st.session_state["completed_items"].remove(todo)
                 # del st.session_state[todo]
-                functions.update_todos(todos)
+    functions.update_todos(todos)
 
 
 def edit_todo(button_id):
@@ -43,7 +51,10 @@ def cancel_edit():
 
 
 todos = functions.get_todos()
-completed = []
+notices = ["Please remember to check the completed todos promptly.",
+          "Edit todo to keep your life on track.",
+          "Todo already."]
+
 if "item_to_edit" not in st.session_state:
     st.session_state["item_to_edit"] = 0
 if "in_edit" not in st.session_state:
@@ -52,16 +63,20 @@ if "item_uncheck" not in st.session_state:
     st.session_state["item_uncheck"] = True
 if "completed_items" not in st.session_state:
     st.session_state["completed_items"] = []
-
+if "duplicate_notice" not in st.session_state:
+    st.session_state["duplicate_notice"] = False
 
 #webpage
 placeholder = st.empty()
 st.title("My Todo App")
 st.subheader("Keep your life organized.")
-if not st.session_state["in_edit"]:
-    st.write("Please remember to check the completed todos promptly.")
+notice = st.write()
 if st.session_state["in_edit"]:
-    st.write("Edit todo to keep your life on track.\n")
+    notice = st.write(notices[1])
+elif st.session_state["duplicate_notice"]:
+    notice = st.write(notices[2])
+else:
+    notice = st.write(notices[0])
 
 for idx, todo in enumerate(todos):
     col1, col2 = st.columns(2)
